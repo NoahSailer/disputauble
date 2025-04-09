@@ -1,4 +1,4 @@
-# dispu$\tau$ble
+# dispuτauble
 
 Clone this repo and run `create_cobaya_env.sh`. Here's an example for submitting a bunch of minimizing jobs
 
