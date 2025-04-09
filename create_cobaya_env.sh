@@ -20,4 +20,3 @@ python3 -m pip install mflike --user
 python3 -m pip install act_dr6_mflike --user
 python3 -m pip install act_dr6_lenslike  --user
 cobaya-install pact_tau\=0.06.yaml -p $SCRATCH/Cobaya/Packages
-export COBAYA_USE_FILE_LOCKING=False

@@ -11,6 +11,8 @@
 adddata=$1
 olddata=$2
 conda activate cobaya_up2d8
+rm chains/*lock*
+export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=8
 srun -n 1  -c 8 python add_data.py ${adddata} ${olddata}
 srun -n 16 -c 8 cobaya-run --force ${adddata}_${olddata}.yaml

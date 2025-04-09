@@ -10,6 +10,7 @@
 
 name=$1
 conda activate cobaya_up2d8
-export COBAYA_USE_FILE_LOCKING=False
+rm chains/*lock*
+export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=4
 srun -N 1 -n 32 -c 4 cobaya-run --minimize --force ${name}.yaml

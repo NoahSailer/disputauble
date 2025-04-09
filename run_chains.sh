@@ -10,7 +10,8 @@
 
 name=$1
 conda activate cobaya_up2d8
-export COBAYA_USE_FILE_LOCKING=False
+rm chains/*lock*
+export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=8
 if test -f "chains/${name}.1.txt"
 then
