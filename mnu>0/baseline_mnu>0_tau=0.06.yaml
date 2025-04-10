@@ -9,5 +9,5 @@ sampler:
     Rminus1_cl_stop: 0.05
     learn_proposal_Rminus1_max_early: 30.0
     learn_proposal_Rminus1_max: 10.0
-    covmat: /Users/gfarren/SynologyDrive/Berkeley/chains/explore_mnu/mnu>0_tau=PlanckLowl/mnu>0_tau=PlanckLowl.covmat
-output: /Users/gfarren/SynologyDrive/Berkeley/chains/explore_mnu/mnu>0_tau=0.06/mnu>0_tau=0.06
+    covmat: ../chains/mnu>0_tau=PlanckLowl/mnu>0_tau=PlanckLowl.covmat
+output: ../chains/mnu>0_tau=0.06/mnu>0_tau=0.06
