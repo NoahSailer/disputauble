@@ -3,7 +3,7 @@ theory: !defaults [../theory/camb,../theory/lensing_lklh_corrections]
 likelihood: !defaults [../likelihoods/pr4-TTTEEE_pr4dr6-ckk]
 
 params: !defaults [../params/lcdm-mnu_default]
-  tau: 0.06
+  tau: 0.09
 
 sampler:
   mcmc:
@@ -12,4 +12,4 @@ sampler:
     learn_proposal_Rminus1_max_early: 30.0
     learn_proposal_Rminus1_max: 10.0
 
-output: ../chains/pr4-TTTEEE_pr4dr6-ckk_tau=0.06
+output: ../chains/pr4-TTTEEE_pr4dr6-ckk_tau=0.09
