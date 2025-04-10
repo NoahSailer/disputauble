@@ -2,8 +2,8 @@
 #SBATCH -J add_data
 #SBATCH -t 2:00:00
 #SBATCH -N 1
-#SBATCH -o log/add_data.out
-#SBATCH -e log/add_data.err
+#SBATCH -o ../log/add_data.out
+#SBATCH -e ../log/add_data.err
 #SBATCH -q regular
 #SBATCH -C cpu
 #SBATCH -A desi
@@ -11,7 +11,7 @@
 adddata=$1
 olddata=$2
 conda activate cobaya_up2d8
-rm chains/*lock*
+rm ../chains/*lock*
 export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=8
 srun -n 1  -c 8 python add_data.py ${adddata} ${olddata}

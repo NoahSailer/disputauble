@@ -27,7 +27,7 @@ sampler:
     learn_proposal_Rminus1_max_early: 30.0
     learn_proposal_Rminus1_max: 10.0
 
-output: chains/pr4-TTTEEE_pr4dr6-ckk_tau=0.06
+output: ../chains/pr4-TTTEEE_pr4dr6-ckk_tau=0.06
 
 params:
   # Fixed
