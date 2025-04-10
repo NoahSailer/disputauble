@@ -1,0 +1,7 @@
+tau:
+  prior:
+    dist: norm
+    loc: 0.09
+    scale: 0.0062
+  proposal: 0.0062
+  latex: \tau_\mathrm{reio}

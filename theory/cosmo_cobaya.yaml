@@ -1,0 +1,5 @@
+LSS_analysis_framework.cobaya_interfaces.CosmoCobaya:
+  want_CMB: True
+  want_Background: True
+  want_Lensing: True
+  cosmo_model: mnu

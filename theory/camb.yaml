@@ -1,0 +1,12 @@
+camb:
+  stop_at_error: false
+
+  extra_args:
+    kmax: 10
+    k_per_logint: 130
+    nonlinear: true
+    lens_potential_accuracy: 8
+    lens_margin: 2050
+    lAccuracyBoost: 1.2
+    min_l_logl_sampling: 6000
+    DoLateRadTruncation: false
