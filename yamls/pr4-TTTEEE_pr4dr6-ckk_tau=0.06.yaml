@@ -2,12 +2,8 @@ theory: !defaults [../theory/camb,../theory/lensing_lklh_corrections]
 
 likelihood: !defaults [../likelihoods/pr4-TTTEEE_pr4dr6-ckk]
 
-params: !defaults [../params/lcdm-mnu_default]
+params: !defaults [../params/lcdm-mnu_default,../params/tau=0.06]
 
-override:
-  params:
-    tau: 0.06
-  
 sampler:
   mcmc:
     Rminus1_stop: 0.01

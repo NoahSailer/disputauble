@@ -1,6 +1,5 @@
 camb:
   stop_at_error: false
-
   extra_args:
     kmax: 10
     k_per_logint: 130

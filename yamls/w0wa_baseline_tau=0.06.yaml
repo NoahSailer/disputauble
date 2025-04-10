@@ -1,0 +1,28 @@
+theory:
+  camb:
+    stop_at_error: false
+    extra_args:
+      kmax: 10
+      k_per_logint: 130
+      nonlinear: true
+      lens_potential_accuracy: 8
+      lens_margin: 2050
+      lAccuracyBoost: 1.2
+      min_l_logl_sampling: 6000
+      DoLateRadTruncation: false
+      dark_energy_model: ppf
+  CMBLensLklh.LensLklhCorrection:
+    stop_at_error: True
+
+likelihood: !defaults [../likelihoods/baseline_likelihoods]
+
+params: !defaults [../params/w0wa_default,../params/tau=0.06]
+  
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+
+output: ../chains/w0wa_baseline_tau=0.06
