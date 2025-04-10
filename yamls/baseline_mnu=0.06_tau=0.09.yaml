@@ -1,0 +1,14 @@
+theory: !defaults [../theory/camb,../theory/lensing_lklh_corrections]
+
+likelihood: !defaults [../likelihoods/baseline_likelihoods]
+
+params: !defaults [../params/lcdm-mnu_default,../params/mnu=0.06,../params/tau=0.09]
+  
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+
+output: ../chains/baseline_mnu=0.06_tau=0.09
