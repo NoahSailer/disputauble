@@ -1,0 +1,4 @@
+planck_NPIPE_highl_CamSpec.TTTEEE:
+CMBLensLklh.CMBLensLklh:
+  samples: [ACT,Planck]
+  stop_at_error: true

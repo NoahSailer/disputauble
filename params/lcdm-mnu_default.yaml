@@ -1,0 +1,72 @@
+ombh2:
+  prior: {min: 0.017, max: 0.027}
+  ref: {dist: norm, loc: 2.237e-2, scale: 3e-4}
+  proposal: 1.5e-4
+  latex: \Omega_bh^2
+omch2:
+  prior: {min: 0.09, max: 0.15}
+  ref: {dist: norm, loc: 12.00e-2, scale: 2.4e-3}
+  proposal: 1.2e-3
+  latex: \Omega_ch^2
+cosmomc_theta:
+  prior: {min: 103.8e-4, max: 104.4e-4}
+  ref: {dist: norm, loc: 104.092e-4, scale: 6.2e-6}
+  proposal: 3.1e-6
+  latex: \theta_\mathrm{MC}
+logA:
+  prior: {min: 2.6, max: 3.5}
+  ref: {dist: norm, loc: 3.044, scale: 2.8e-2}
+  proposal: 1.4e-2
+  latex: \ln(10^{10} A_s)
+ns:
+  prior: {min: 0.9, max: 1.1}
+  ref: {dist: norm, loc: 0.9649, scale: 8.4e-3}
+  proposal: 4.2e-3
+  latex: n_s
+tau:
+  prior: {min: 0.0, max: 0.2}
+  ref: {dist: norm, loc: 0.0544, scale: 0.0073}
+  proposal: 0.0073
+  latex: \tau_\mathrm{reio}
+mnu:
+  prior: {min: 0., max: 0.2}
+  ref: {dist: norm, loc: 0.06, scale: 0.02}
+  proposal: 0.01
+  latex: \sum m_\nu
+H0:
+  latex: H_0
+  derived: true
+sigma8:
+  latex: \sigma_8
+  derived: true
+YHe:
+  latex: Y_\mathrm{He}
+  derived: true
+zrei:
+  latex: z_\mathrm{reio}
+  derived: true
+zstar:
+  latex: z_\star
+  derived: true
+rstar:
+  latex: r_{s,\star}
+  derived: true
+zdrag:
+  latex: z_d
+  derived: true
+rdrag:
+  latex: r_d
+  derived: true
+omnuh2:
+  latex: \Omega_\nuh^2
+  derived: true
+OmegaM:
+  derived: "lambda omch2,ombh2,omnuh2,H0: (omch2+ombh2+omnuh2)/(H0/100)**2"
+  latex: Omega_m
+S8:
+  derived: 'lambda OmegaM, sigma8: sigma8*(OmegaM/0.3)**0.5'
+  latex: S_8
+As:
+  value: "lambda logA: 1e-10*np.exp(logA)"
+  latex: A_s
+  derived: true
