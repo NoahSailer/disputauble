@@ -1,0 +1,96 @@
+likelihood:
+  planck_NPIPE_highl_CamSpec.TTTEEE:
+  CMBLensLklh.CMBLensLklh:
+    samples: [ACT,Planck]
+    stop_at_error: true
+
+theory:
+  camb:
+    stop_at_error: false
+    extra_args:
+      kmax: 10
+      k_per_logint: 130
+      nonlinear: true
+      lens_potential_accuracy: 8
+      lens_margin: 2050
+      lAccuracyBoost: 1.2
+      min_l_logl_sampling: 6000
+      DoLateRadTruncation: false
+      halofit_version: mead2020
+  CMBLensLklh.LensLklhCorrection:
+    stop_at_error: true
+
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+
+output: chains/pr4-TTTEEE_pr4dr6-ckk_tau=0.06
+
+params:
+  # Fixed
+  tau: 0.06
+  # Sampled
+  ombh2:
+    prior: {min: 0.017, max: 0.027}
+    ref: {dist: norm, loc: 2.237e-2, scale: 3e-4}
+    proposal: 1.5e-4
+    latex: \Omega_bh^2
+  omch2:
+    prior: {min: 0.09, max: 0.15}
+    ref: {dist: norm, loc: 12.00e-2, scale: 2.4e-3}
+    proposal: 1.2e-3
+    latex: \Omega_ch^2
+  cosmomc_theta:
+    prior: {min: 103.8e-4, max: 104.4e-4}
+    ref: {dist: norm, loc: 104.092e-4, scale: 6.2e-6}
+    proposal: 3.1e-6
+    latex: \theta_\mathrm{MC}
+  logA:
+    prior: {min: 2.6, max: 3.5}
+    ref: {dist: norm, loc: 3.044, scale: 2.8e-2}
+    proposal: 1.4e-2
+    latex: \ln(10^{10} A_s)
+  ns:
+    prior: {min: 0.9, max: 1.1}
+    ref: {dist: norm, loc: 0.9649, scale: 8.4e-3}
+    proposal: 4.2e-3
+    latex: n_s
+  mnu:
+    prior: {min: 0., max: 0.2}
+    ref: {dist: norm, loc: 0.06, scale: 0.02}
+    proposal: 0.01
+    latex: \sum m_\nu
+  # Derived
+  H0:
+    latex: H_0
+  sigma8:
+    latex: \sigma_8
+  theta_s100:
+    latex: 100\theta_\star
+  YHe:
+    latex: Y_\mathrm{He}
+  zrei:
+    latex: z_\mathrm{reio}
+  zstar:
+    latex: z_\star
+  rstar:
+    latex: r_{s,\star}
+  zdrag:
+    latex: z_d
+  rdrag:
+    latex: r_d
+  omnuh2:
+    latex: \Omega_\nuh^2
+  OmegaM:
+    derived: "lambda omch2,ombh2,omnuh2,H0: (omch2+ombh2+omnuh2)/(H0/100)**2"
+    latex: Omega_m
+  S8:
+    derived: 'lambda OmegaM, sigma8: sigma8*(OmegaM/0.3)**0.5'
+    latex: S_8
+  As:
+    value: "lambda logA: 1e-10*np.exp(logA)"
+    latex: A_s
+    derived: true
