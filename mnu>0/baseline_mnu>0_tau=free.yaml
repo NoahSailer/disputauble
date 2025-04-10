@@ -1,0 +1,13 @@
+theory: !defaults [../theory/cosmo_cobaya,../theory/lensing_lklh_corrections]
+
+likelihood: !defaults [../likelihoods/baseline_likelihoods]
+
+params: !defaults [../params/baseline_parameters, ../params/mnu_param_gtr0, ../params/tau_param_free]
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+    covmat: ../chains/mnu>0_tau=PlanckLowl/mnu>0_tau=PlanckLowl.covmat
+output: ../chains/mnu>0_tau=free/mnu>0_tau=free
