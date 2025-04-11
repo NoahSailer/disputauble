@@ -1,0 +1,5 @@
+mnu:
+  prior: {min: 0., max: 0.2}
+  ref: {dist: norm, loc: 0.06, scale: 0.02}
+  proposal: 0.01
+  latex: \sum m_\nu
