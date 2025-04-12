@@ -44,9 +44,9 @@ omnuh2:
   derived: true
 OmegaM:
   derived: "lambda omch2,ombh2,omnuh2,H0: (omch2+ombh2+omnuh2)/(H0/100)**2"
-  latex: Omega_m
+  latex: \Omega_\mathrm{m}
 H0rd: 
-  derived: "lambda H0, rdrag: H0*rdrag"
+  derived: "lambda H0, rdrag: H0*rdrag/100"
   latex: H_0r_d
 S8:
   derived: 'lambda OmegaM, sigma8: sigma8*(OmegaM/0.3)**0.5'
