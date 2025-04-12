@@ -8,3 +8,4 @@ camb:
     lSampleBoost: 1
     lAccuracyBoost: 1
     halofit_version: 'mead2016'
+    dark_energy_model: ppf
