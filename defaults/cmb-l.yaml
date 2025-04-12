@@ -1,0 +1,3 @@
+CMBLensLklh.CMBLensLklh:
+  samples: [ACT,Planck]
+  stop_at_error: true
