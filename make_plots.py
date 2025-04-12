@@ -27,29 +27,61 @@ matplotlib.rcParams['ytick.minor.width'] = 1.5
 matplotlib.rcParams['axes.titlesize'] = 30
 matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 
+RM1_CUT = 1e5
+
+################################################
+####     Check if chains have been run       ###
+################################################
+
+def load_chains(names,rm1_cut=RM1_CUT):
+    chains = []
+    for name in names:
+        try: 
+            chain = loadMCSamples(f'chains/{name}',settings={'ignore_rows':0.3})
+            chains.append(chain)
+        except: 
+            s = f"make_plots.py failed. Chains have not been run for {name}.yaml"
+            raise RuntimeError(s)
+        rm1 = chain.getGelmanRubin()
+        if rm1>rm1_cut: 
+            s = f"make_plots.py failed. R-1={rm1:0.3f}>{rm1_cut} for {name}.yaml"
+            raise RuntimeError(s)
+    return chains
+
 ################################################
 ####               Figure 1                  ###
 ################################################
 
-g = gdplt.get_single_plotter(width_inch=7, ratio=0.8)
-g.settings.alpha_filled_add = 0.8
-g.settings.axes_labelsize = 28 
-g.settings.axes_fontsize = 20 
-g.settings.axis_marker_color = 'k'
-g.settings.axis_marker_lw = 1.2
-g.settings.figure_legend_ncol = 2
-g.settings.linewidth_contour = 2
+def make_figure_1():
+    g = gdplt.get_single_plotter(width_inch=7, ratio=0.8)
+    g.settings.alpha_filled_add = 0.8
+    g.settings.axes_labelsize = 28 
+    g.settings.axes_fontsize = 20 
+    g.settings.axis_marker_color = 'k'
+    g.settings.axis_marker_lw = 1.2
+    g.settings.figure_legend_ncol = 2
+    g.settings.linewidth_contour = 2
+    FIG1_NAMES = [
+    'lcdm-lite_mnu=0.06_tau=0.06_bao',
+    'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l',
+    'lcdm_mnu=0.06_tau=0.09_cmb-p+cmb-l',
+    ]
+    chains = load_chains(FIG1_NAMES)
+    labels = [r'DESI DR2 BAO',r'CMB, $\tau=0.06$',r'CMB, $\tau=0.09$']
+    colors = ['C0','C6','C4']
+    g.rectangle_plot(['H0rd'],['OmegaM'],plot_roots=[[chains]],
+                     filled=[True,False,False],colors=colors)
+    for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
+    plt.xlabel(r'$H_0\,r_d$ [100 km s$^{-1}$]')
+    plt.ylabel(r'$\Omega_{\rm m}$')
+    plt.legend(loc='lower left',frameon=False,fontsize=20)
+    plt.xticks([98,100,102,104])
+    plt.yticks([0.28,0.30,0.32,0.34])
+    plt.savefig('figures/H0rd_OmM_contours.pdf', dpi=100, bbox_inches='tight')
 
-names  = ['lcdm-lite_mnu=0.06_tau=0.06_bao',
-          'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l']
-chains = [loadMCSamples(f'chains/{name}',settings={'ignore_rows':0.3}) for name in names]
-labels = [r'DESI DR2 BAO',r'CMB, $\tau=0.06$']
-colors = ['C0','C6']
-g.rectangle_plot(['H0rd/100'],['OmegaM'],plot_roots=[[chains]],filled=True,colors=colors)
-for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
-plt.xlabel(r'$H_0\,r_d$ [100 km s$^{-1}$]')
-plt.ylabel(r'$\Omega_{\rm m}$')
-plt.legend(loc='lower left',frameon=False,fontsize=20)
-plt.xticks([98,100,102,104])
-plt.yticks([0.28,0.30,0.32,0.34])
-plt.savefig('figures/H0rd_OmM_contours.pdf', dpi=100, bbox_inches='tight')
+################################################
+####          Make the figures               ###
+################################################
+
+if __name__ == "__main__":
+    make_figure_1()
