@@ -1,0 +1,19 @@
+theory: !defaults [../theory/camb,../theory/lensing_lklh_corrections]
+
+likelihood:
+  planck_2018_lowl.TT_clik:
+  planck_2018_lowl.EE_clik:
+  planck_2018_highl_plik.TTTEEE:
+  bao.desi_dr2.desi_bao_all:
+  CMBLensLklh.CMBLensLklh:
+
+params: !defaults [../params/lcdm-mnu_default,../params/mnu=0.06]
+  
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+
+output: ../chains/p18-based_mnu=0.06_tau=PlanckLowl
