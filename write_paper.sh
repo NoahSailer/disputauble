@@ -8,25 +8,28 @@ else
   echo "Creating conda env: cobaya_up2d8"
   bash create_cobaya_env.sh
 fi
-# run chains & minimizer (UPDATE)
+# run chains & minimizer (CURRENTLY RESTRICTED TO FIG 1)
 cd yamls
 for filename in *tau\=0.0*.yaml; do
   base="${filename%.yaml}"
-  if [ ! -f ../chains/$base.1.txt ]; then
+  if [ ! -f ../chains/$base.chains_submitted ]; then
     echo "Submitted job: run_chains.sh $base"
     sbatch run_chains.sh $base
+    touch ../chains/$base.chains_submitted
   else
-    echo "Skipping run_chains.sh $base, found existing chains."
+    echo "Already submitted: run_chains.sh $base"
   fi
-  if [ ! -f ../chains/$base.minimize.minumum ]; then
+  if [ ! -f ../chains/$base.minimizer_submitted ]; then
     echo "Submitted job: minimize.sh $base"
     sbatch minimize.sh $base
+    touch ../chains/$base.minimizer_submitted
   else
-    echo "Skipping minimize.sh $base, found existing minimum."
+    echo "Already submitted: minimize.sh $base"
   fi
 done
-# make plots (ADDRESS ISSUES WITH MATPLOTLIB AT NERSC)
-#cd ..
-#module load texlive
-#source activate noah_base
-#python make_plots.py
+# make plots
+cd ..
+module load texlive
+module load python/3.9
+conda activate cobaya_up2d8
+python make_plots.py

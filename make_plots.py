@@ -43,13 +43,10 @@ g.settings.linewidth_contour = 2
 names  = ['lcdm-lite_mnu=0.06_tau=0.06_bao',
           'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l']
 chains = [loadMCSamples(f'chains/{name}',settings={'ignore_rows':0.3}) for name in names]
-for chain in chains:
-    chain.addDerived(chain.samples[:,chain.index['H0rd']]/100, name='H0rd/100')
 labels = [r'DESI DR2 BAO',r'CMB, $\tau=0.06$']
 colors = ['C0','C6']
 g.rectangle_plot(['H0rd/100'],['OmegaM'],plot_roots=[[chains]],filled=True,colors=colors)
-for label,c in zip(labels,colors):
-    plt.hist([],color=c,label=label)
+for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
 plt.xlabel(r'$H_0\,r_d$ [100 km s$^{-1}$]')
 plt.ylabel(r'$\Omega_{\rm m}$')
 plt.legend(loc='lower left',frameon=False,fontsize=20)
