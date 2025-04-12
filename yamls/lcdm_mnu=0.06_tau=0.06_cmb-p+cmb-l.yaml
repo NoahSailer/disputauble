@@ -4,6 +4,8 @@ likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l]
 
 params: !defaults [../defaults/lcdm,../defaults/mnu=0.06,../defaults/tau=0.06]
 
+minimizer: !defaults [../defaults/minimizer_precision]
+
 sampler:
   mcmc:
     Rminus1_stop: 0.01

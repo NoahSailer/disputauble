@@ -1,0 +1,8 @@
+minimizer:
+  minimize:
+    method: Powell
+    tol: 1e-9
+    options:
+      maxiter: 10000
+      maxfev: 20000
+      disp: True

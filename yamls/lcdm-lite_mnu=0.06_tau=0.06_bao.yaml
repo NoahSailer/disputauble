@@ -1,0 +1,16 @@
+theory: !defaults [../defaults/camb]
+
+likelihood: !defaults [../defaults/bao]
+
+params: !defaults [../defaults/lcdm-lite,../defaults/mnu=0.06,../defaults/tau=0.06]
+
+minimizer: !defaults [../defaults/minimizer_precision]
+
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+
+output: ../chains/lcdm-lite_mnu=0.06_tau=0.06_bao
