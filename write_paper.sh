@@ -8,7 +8,7 @@ else
   echo "Creating conda env: cobaya_up2d8"
   bash create_cobaya_env.sh
 fi
-# run chains & minimizer (CURRENTLY RESTRICTED TO FIG 1)
+# run chains & minimizer (CURRENTLY RESTRICTED TO FIG 1 AND 3)
 cd yamls
 for filename in *tau\=0.0*.yaml; do
   base="${filename%.yaml}"
