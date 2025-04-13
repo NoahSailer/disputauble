@@ -5,6 +5,9 @@ import matplotlib.font_manager
 from getdist.mcsamples import MCSamplesFromCobaya
 from getdist.mcsamples import loadMCSamples
 import getdist.plots as gdplt
+import yaml
+from yaml.loader import SafeLoader
+from scipy.stats import chi2, norm
 # make plots pretty
 plt.rc('font',**{'size':'22','family':'serif','serif':['CMU serif']})
 plt.rc('mathtext', **{'fontset':'cm'})
@@ -30,10 +33,10 @@ matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 RM1_CUT = 1e5
 
 ################################################
-####   Check if chains have been analyzed    ###
+####          Helper functions               ###
 ################################################
 
-def load_chains(names,rm1_cut=RM1_CUT):
+def load_chains(names,rm1_cut=RM1_CUT,verbose=True):
     chains = []
     for name in names:
         try: 
@@ -43,16 +46,45 @@ def load_chains(names,rm1_cut=RM1_CUT):
             s = f"make_plots.py failed. Chains have not been run for {name}.yaml"
             raise RuntimeError(s)
         rm1 = chain.getGelmanRubin()
+        if verbose: print(f"R-1={rm1:0.3f} for {name}.yaml",flush=True)
         if rm1>rm1_cut: 
             s = f"make_plots.py failed. R-1={rm1:0.3f}>{rm1_cut} for {name}.yaml"
             raise RuntimeError(s)
     return chains
 
-def load_minima(names):
-    minima = []
-    for name in names: 
-        continue
-    return minima
+def get_bestFit_values(fn):
+    fullfn = f'chains/{fn}.minimum.txt'
+    for line in open(fullfn):
+        li=line.strip()
+        if li.startswith("#"):
+            header = li
+    header = np.array(header.split())[1:].tolist()
+    bf = np.loadtxt(fullfn)
+    return dict(zip(header,bf))
+
+################################################
+####            Tension metrics              ###
+################################################
+
+def deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn):
+    w0wa_info = yaml.load(open(f'chains/{w0wa_fn}.minimize.input.yaml'), Loader=SafeLoader)
+    lcdm_info = yaml.load(open(f'chains/{lcdm_fn}.minimize.input.yaml'), Loader=SafeLoader)
+    w0wa_logP = -1*get_bestFit_values(w0wa_fn)['minuslogpost']
+    lcdm_logP = -1*get_bestFit_values(lcdm_fn)['minuslogpost']
+    w0wa_area = w0wa_info['params']['w']['prior']['max']-w0wa_info['params']['w']['prior']['min']
+    w0wa_area*= w0wa_info['params']['wa']['prior']['max']-w0wa_info['params']['wa']['prior']['min']
+    return 2*(w0wa_logP+np.log(w0wa_area)-lcdm_logP)
+
+def deltaChi2_w0wa_vs_lcdm_tau(tau,dataset='cmb-p+cmb-l+bao'):
+    w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
+    lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
+    return deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
+
+def deltaChi2_to_sigma(dchi2,dof=2):
+    chi2cdf = chi2.cdf(dchi2, df=dof)
+    x = np.linspace(-10,10,50000)
+    normcdf = norm.cdf(x)
+    return x[np.argmin((chi2cdf-normcdf)**2)]
 
 ################################################
 ####               Figure 1                  ###
@@ -106,28 +138,40 @@ def make_figure_3():
     ]
     chains = load_chains(FIG3_NAMES)
     labels = [r'$\tau=0.06$',r'$\tau=0.09$']
-    colors = ['C0','C3']
+    colors = ['C6','k']
     g.rectangle_plot(['w'],['wa'],plot_roots=[[chains]],
-                     filled=[True,True],colors=colors,ls=['-','-'])
+                     filled=[True,False],colors=colors,ls=['-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
-    plt.text(-0.32,-0.5,r'DESI+CMB',fontsize=30)
-    plt.axhline(y=0,c='k',lw=2,ls='--')
-    plt.axvline(x=-1,c='k',lw=2,ls='--')
+    plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
+    plt.axhline(y=0,c='k',lw=2,ls='dotted')
+    plt.axvline(x=-1,c='k',lw=2,ls='dotted')
     plt.xlabel(r'$w_0$')
     plt.ylabel(r'$w_a$')
     plt.legend(loc=(0.6,0.55),frameon=False,fontsize=20)
-    plt.xticks([-1,-0.5,0])
-    plt.yticks([-3,-2,-1,0])
-    plt.xlim(-1.1,0.3)
-    plt.ylim(-3,0.3)
-    plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=60,color='goldenrod')
-    plt.text(-0.98,-0.15,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='top',fontsize=30,color='goldenrod')
+    plt.xticks([-1.5,-1,-0.5,0])
+    plt.yticks([-3,-2,-1,0,1])
+    plt.xlim(-1.5,0.3)
+    plt.ylim(-3,1)
+    for i,name in enumerate(FIG3_NAMES):
+        bf = get_bestFit_values(name)
+        w0,wa = bf['w'],bf['wa']
+        plt.text(w0,wa,r'$\boldsymbol{\spadesuit}$',ha='center', va='center',fontsize=20,color=colors[i])
+    plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=50,color='y')
+    plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color='y')
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
 
 ################################################
 ####          Make the figures               ###
+####        Print tension metrics            ###
 ################################################
 
 if __name__ == "__main__":
     make_figure_1()
     make_figure_3()
+    for dataset in ['cmb-p+cmb-l+bao']:
+        for tau in [0.06,0.09]: 
+            delt = deltaChi2_w0wa_vs_lcdm_tau(tau=tau,dataset=dataset)
+            sig = deltaChi2_to_sigma(delt,dof=2)
+            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
+            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
+            print(s,flush=True)

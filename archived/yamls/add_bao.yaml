@@ -1,7 +1,0 @@
-post:
-  add:
-    likelihood:
-      bao.desi_dr2:
-  suffix: desibao
-
-output: chains/example

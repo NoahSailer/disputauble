@@ -1,7 +1,7 @@
 #!/bin/bash
 reanalyze=true
 continue_chains=false
-njobs=1
+njobs=2
 while [[ "$#" -gt 0 ]]; do
   [[ "$1" == "--reanalyze" ]] && reanalyze="${2,,}" && shift
   shift
@@ -31,13 +31,13 @@ if $reanalyze; then
         JOBID=$(sbatch --dependency=afterany:$JOBID run_chains.sh $base | awk '{print $4}')
       done
       touch ../chains/$base.chains_submitted
-      echo "Submitted job: run_chains.sh $base"
+      echo "Submitted jobs: run_chains.sh $base"
     else
       echo "Already submitted: run_chains.sh $base"
     fi
     # minimizer
     if [ ! -f ../chains/$base.minimizer_submitted ]; then
-      sbatch minimize.sh $base
+      JOBID=$(sbatch minimize.sh $base | awk '{print $4}')
       touch ../chains/$base.minimizer_submitted
       echo "Submitted job: minimize.sh $base"
     else
@@ -50,4 +50,4 @@ cd ..
 module load texlive
 module load python/3.9
 conda activate cobaya_up2d8
-python make_plots.py
+python do_analysis.py
