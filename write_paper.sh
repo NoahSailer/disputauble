@@ -1,7 +1,7 @@
 #!/bin/bash
 reanalyze=true
 continue_chains=false
-njobs=2
+njobs=4
 while [[ "$#" -gt 0 ]]; do
   [[ "$1" == "--reanalyze" ]] && reanalyze="${2,,}" && shift
   shift
@@ -20,14 +20,14 @@ cd yamls
 if $reanalyze; then
   for filename in *tau\=0.0*.yaml; do
   # If not already submitted:
-  #   - Submits 1+njobs run_chains jobs for each yaml file. 
-  #     The 1+njobs are daisy-chained by their dependencies.
+  #   - Submits njobs run_chains jobs for each yaml file. 
+  #     The njobs are daisy-chained by their dependencies.
   #   - Submits minimizer job for each yaml file.
     base="${filename%.yaml}"
     # chains
     if [ ! -f ../chains/$base.chains_submitted ]; then
       JOBID=$(sbatch run_chains.sh $base | awk '{print $4}')
-      for i in {1..$njobs}; do
+      for i in $(seq 2 $njobs); do
         JOBID=$(sbatch --dependency=afterany:$JOBID run_chains.sh $base | awk '{print $4}')
       done
       touch ../chains/$base.chains_submitted

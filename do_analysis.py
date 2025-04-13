@@ -40,6 +40,7 @@ def load_chains(names,rm1_cut=RM1_CUT,verbose=True):
     chains = []
     for name in names:
         try: 
+            print(name)
             chain = loadMCSamples(f'chains/{name}',settings={'ignore_rows':0.3})
             chains.append(chain)
         except: 
@@ -143,8 +144,8 @@ def make_figure_3():
                      filled=[True,False],colors=colors,ls=['-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
     plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
-    plt.axhline(y=0,c='k',lw=2,ls='dotted')
-    plt.axvline(x=-1,c='k',lw=2,ls='dotted')
+    plt.axhline(y=0,c='gray',lw=2,ls='dotted')
+    plt.axvline(x=-1,c='gray',lw=2,ls='dotted')
     plt.xlabel(r'$w_0$')
     plt.ylabel(r'$w_a$')
     plt.legend(loc=(0.6,0.55),frameon=False,fontsize=20)
@@ -155,9 +156,9 @@ def make_figure_3():
     for i,name in enumerate(FIG3_NAMES):
         bf = get_bestFit_values(name)
         w0,wa = bf['w'],bf['wa']
-        plt.text(w0,wa,r'$\boldsymbol{\spadesuit}$',ha='center', va='center',fontsize=20,color=colors[i])
-    plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=50,color='y')
-    plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color='y')
+        plt.text(w0,wa,r'$\boldsymbol{\spadesuit}$',ha='center', va='center',fontsize=15,color=colors[i])
+    plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=30,color='gray')
+    plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color='gray')
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
 
 ################################################
