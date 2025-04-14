@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager
+import matplotlib.patheffects as path_effects
 from getdist.mcsamples import MCSamplesFromCobaya
 from getdist.mcsamples import loadMCSamples
 import getdist.plots as gdplt
@@ -28,7 +29,7 @@ matplotlib.rcParams['ytick.major.width'] = 3
 matplotlib.rcParams['xtick.minor.width'] = 1.5
 matplotlib.rcParams['ytick.minor.width'] = 1.5
 matplotlib.rcParams['axes.titlesize'] = 30
-matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
+matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath, amssymb}'
 
 RM1_CUT = 1e5
 
@@ -40,16 +41,15 @@ def load_chains(names,rm1_cut=RM1_CUT,verbose=True):
     chains = []
     for name in names:
         try: 
-            print(name)
             chain = loadMCSamples(f'chains/{name}',settings={'ignore_rows':0.3})
             chains.append(chain)
         except: 
-            s = f"make_plots.py failed. Chains have not been run for {name}.yaml"
+            s = f"Chains have not been run for {name}.yaml"
             raise RuntimeError(s)
         rm1 = chain.getGelmanRubin()
         if verbose: print(f"R-1={rm1:0.3f} for {name}.yaml",flush=True)
         if rm1>rm1_cut: 
-            s = f"make_plots.py failed. R-1={rm1:0.3f}>{rm1_cut} for {name}.yaml"
+            s = f"R-1={rm1:0.3f}>{rm1_cut} for {name}.yaml"
             raise RuntimeError(s)
     return chains
 
@@ -76,16 +76,22 @@ def deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn):
     w0wa_area*= w0wa_info['params']['wa']['prior']['max']-w0wa_info['params']['wa']['prior']['min']
     return 2*(w0wa_logP+np.log(w0wa_area)-lcdm_logP)
 
-def deltaChi2_w0wa_vs_lcdm_tau(tau,dataset='cmb-p+cmb-l+bao'):
-    w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
-    lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
-    return deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
-
 def deltaChi2_to_sigma(dchi2,dof=2):
     chi2cdf = chi2.cdf(dchi2, df=dof)
-    x = np.linspace(-10,10,50000)
+    x = np.linspace(-1,4,50000)
     normcdf = norm.cdf(x)
     return x[np.argmin((chi2cdf-normcdf)**2)]
+
+def print_tension_metrics():
+    for dataset in ['cmb-p+cmb-l+bao']:
+        for tau in [0.06,0.09]: 
+            w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
+            lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
+            delt = deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
+            sig = deltaChi2_to_sigma(delt,dof=2)
+            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
+            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
+            print(s,flush=True)
 
 ################################################
 ####               Figure 1                  ###
@@ -99,7 +105,7 @@ def make_figure_1():
     g.settings.axis_marker_color = 'k'
     g.settings.axis_marker_lw = 1.2
     g.settings.figure_legend_ncol = 2
-    g.settings.linewidth_contour = 2
+    g.settings.linewidth_contour = 0
     FIG1_NAMES = [
     'lcdm-lite_mnu=0.06_tau=0.06_bao',
     'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l',
@@ -133,6 +139,7 @@ def make_figure_3():
     g.settings.axis_marker_lw = 1.2
     g.settings.figure_legend_ncol = 2
     g.settings.linewidth_contour = 2
+    lcdm_color='gold'
     FIG3_NAMES = [
     'w0wa_mnu=0.06_tau=0.06_cmb-p+cmb-l+bao',
     'w0wa_mnu=0.06_tau=0.09_cmb-p+cmb-l+bao',
@@ -144,8 +151,8 @@ def make_figure_3():
                      filled=[True,False],colors=colors,ls=['-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
     plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
-    plt.axhline(y=0,c='gray',lw=2,ls='dotted')
-    plt.axvline(x=-1,c='gray',lw=2,ls='dotted')
+    plt.axhline(y=0,c=lcdm_color,lw=2,ls='dotted')
+    plt.axvline(x=-1,c=lcdm_color,lw=2,ls='dotted')
     plt.xlabel(r'$w_0$')
     plt.ylabel(r'$w_a$')
     plt.legend(loc=(0.6,0.55),frameon=False,fontsize=20)
@@ -156,9 +163,12 @@ def make_figure_3():
     for i,name in enumerate(FIG3_NAMES):
         bf = get_bestFit_values(name)
         w0,wa = bf['w'],bf['wa']
-        plt.text(w0,wa,r'$\boldsymbol{\spadesuit}$',ha='center', va='center',fontsize=15,color=colors[i])
-    plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=30,color='gray')
-    plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color='gray')
+        text=plt.text(w0,wa,r'$\blacktriangle$',ha='center',va='center',fontsize=15,color=colors[i])
+        text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
+    text = plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=30,color=lcdm_color)
+    text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
+    text=plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color=lcdm_color)
+    text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
 
 ################################################
@@ -169,10 +179,4 @@ def make_figure_3():
 if __name__ == "__main__":
     make_figure_1()
     make_figure_3()
-    for dataset in ['cmb-p+cmb-l+bao']:
-        for tau in [0.06,0.09]: 
-            delt = deltaChi2_w0wa_vs_lcdm_tau(tau=tau,dataset=dataset)
-            sig = deltaChi2_to_sigma(delt,dof=2)
-            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
-            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
-            print(s,flush=True)
+    print_tension_metrics()

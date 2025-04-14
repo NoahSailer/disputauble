@@ -1,6 +1,5 @@
 #!/bin/bash
 reanalyze=true
-continue_chains=false
 njobs=4
 while [[ "$#" -gt 0 ]]; do
   [[ "$1" == "--reanalyze" ]] && reanalyze="${2,,}" && shift
