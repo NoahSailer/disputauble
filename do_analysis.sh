@@ -46,7 +46,7 @@ if $submit; then
       echo "Already submitted: run_chains.sh $filename"
     fi
   done
-  for filename in "${sample[@]}"; do
+  for filename in "${minimize[@]}"; do
     if [ ! -f ../chains/$filename.minimizer_submitted ]; then
       JOBID=$(sbatch minimize.sh $filename | awk '{print $4}')
       touch ../chains/$filename.minimizer_submitted
