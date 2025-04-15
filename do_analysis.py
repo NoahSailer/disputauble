@@ -98,14 +98,12 @@ def print_tension_metrics():
 ################################################
 
 def make_figure_1():
-    g = gdplt.get_single_plotter(width_inch=7, ratio=0.8)
+    g = gdplt.get_single_plotter(width_inch=8, ratio=0.6)
     g.settings.alpha_filled_add = 0.8
     g.settings.axes_labelsize = 28 
     g.settings.axes_fontsize = 20 
     g.settings.axis_marker_color = 'k'
     g.settings.axis_marker_lw = 1.2
-    g.settings.figure_legend_ncol = 2
-    g.settings.linewidth_contour = 0
     FIG1_NAMES = [
     'lcdm-lite_mnu=0.06_tau=0.06_bao',
     'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l',
@@ -117,6 +115,11 @@ def make_figure_1():
     g.rectangle_plot(['H0rd'],['OmegaM'],plot_roots=[[chains]],
                      filled=[True,True,False],colors=colors,ls=['-','-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
+    for i,chain in enumerate(chains):
+        dist = chain.get1DDensity('H0rd'); I = np.where((dist.x>96.8)&(dist.x<103.5))
+        g.add_line(dist.x[I],0.34+dist.P[I]/110,color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
+        dist = chain.get1DDensity('OmegaM'); I = np.where((dist.x>0.276)&(dist.x<0.34))
+        g.add_line(103.5+dist.P[I]/2,dist.x[I],color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
     plt.xlabel(r'$H_0\,r_{\rm d}$ [100 km s$^{-1}$]')
     plt.ylabel(r'$\Omega_{\rm m}$')
     plt.legend(loc='lower left',frameon=False,fontsize=20)
@@ -131,14 +134,12 @@ def make_figure_1():
 ################################################
 
 def make_figure_3():
-    g = gdplt.get_single_plotter(width_inch=7, ratio=0.8)
-    g.settings.alpha_filled_add = 0.8
+    g = gdplt.get_single_plotter(width_inch=8, ratio=0.6)
+    g.settings.alpha_filled_add = 0.4
     g.settings.axes_labelsize = 28 
     g.settings.axes_fontsize = 20 
     g.settings.axis_marker_color = 'k'
     g.settings.axis_marker_lw = 1.2
-    g.settings.figure_legend_ncol = 2
-    g.settings.linewidth_contour = 2
     lcdm_color='gold'
     FIG3_NAMES = [
     'w0wa_mnu=0.06_tau=0.06_cmb-p+cmb-l+bao',
@@ -150,20 +151,24 @@ def make_figure_3():
     g.rectangle_plot(['w'],['wa'],plot_roots=[[chains]],
                      filled=[True,False],colors=colors,ls=['-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
-    plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
-    plt.axhline(y=0,c=lcdm_color,lw=2,ls='dotted')
-    plt.axvline(x=-1,c=lcdm_color,lw=2,ls='dotted')
+    #plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
+    plt.axhline(y=0,c=lcdm_color,lw=1)
+    plt.axvline(x=-1,c=lcdm_color,lw=1)
+    plt.axhline(y=0,c='k',lw=2,ls='dotted')
+    plt.axvline(x=-1,c='k',lw=2,ls='dotted')
     plt.xlabel(r'$w_0$')
     plt.ylabel(r'$w_a$')
-    plt.legend(loc=(0.6,0.55),frameon=False,fontsize=20)
-    plt.xticks([-1.5,-1,-0.5,0])
+    legend = plt.legend(loc=(0.6,0.55),frameon=True,fontsize=20,
+                        framealpha=0.9,title=r'DESI+CMB',title_fontsize=30)
+    legend.get_frame().set_edgecolor('w')
+    plt.xticks([-1,-0.5,0])
     plt.yticks([-3,-2,-1,0,1])
-    plt.xlim(-1.5,0.3)
+    plt.xlim(-1.3,0.3)
     plt.ylim(-3,1)
     for i,name in enumerate(FIG3_NAMES):
         bf = get_bestFit_values(name)
         w0,wa = bf['w'],bf['wa']
-        text=plt.text(w0,wa,r'$\blacktriangle$',ha='center',va='center',fontsize=15,color=colors[i])
+        text=plt.text(w0,wa,r'$\blacktriangle$',ha='center',va='center',fontsize=15,color=['#F4C9E7','k'][i])
         text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
     text = plt.text(-1,0,r'$\boldsymbol{\star}$',ha='center', va='center',fontsize=30,color=lcdm_color)
     text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
