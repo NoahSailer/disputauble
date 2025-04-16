@@ -1,0 +1,14 @@
+theory: !defaults [../defaults/camb_mnu-eff, ../defaults/lensing_lklh_corrections]
+
+likelihood: !defaults [../defaults/cmb-p, ../defaults/cmb-l, ../defaults/bao]
+
+params: !defaults [../defaults/lcdm, ../defaults/mnu_eff, ../defaults/tau=0.09]
+sampler:
+  mcmc:
+    Rminus1_stop: 0.01
+    Rminus1_cl_stop: 0.05
+    learn_proposal_Rminus1_max_early: 30.0
+    learn_proposal_Rminus1_max: 10.0
+    covmat: ../chains/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao.covmat
+    measure_speeds: true
+output: ../chains/lcdm_mnu=free_tau=0.09_cmb-p+cmb-l+bao/lcdm_mnu=free_tau=0.09_cmb-p+cmb-l+bao

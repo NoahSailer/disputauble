@@ -1,0 +1,14 @@
+mnu_eff:
+  prior:
+    min: -2.0
+    max: 2.0
+  ref:
+    dist: norm
+    loc: 0.0
+    scale: 0.2
+  proposal: 0.15
+  latex: \Sigma m_{\nu, \mathrm{eff}}
+
+mnu_abs:
+  derived: 'lambda mnu_eff: np.fabs(mnu_eff)'
+  latex: \|\Sigma m_{\nu, \mathrm{eff}}\|
