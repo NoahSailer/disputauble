@@ -3,6 +3,9 @@ theory: !defaults [../defaults/camb_mnu-eff, ../defaults/lensing_lklh_correction
 likelihood: !defaults [../defaults/cmb-p, ../defaults/cmb-l, ../defaults/bao]
 
 params: !defaults [../defaults/lcdm, ../defaults/mnu_eff, ../defaults/tau=0.06]
+
+minimizer: !defaults [../defaults/minimizer_precision]
+
 sampler:
   mcmc:
     Rminus1_stop: 0.01
