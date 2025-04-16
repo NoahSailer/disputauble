@@ -9,7 +9,8 @@
 #SBATCH -A desi
 
 name=$1
-conda activate cobaya_up2d8
+module load python
+conda activate explore_mnu_env
 rm ../chains/*lock*
 export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=8
