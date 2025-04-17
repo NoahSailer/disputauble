@@ -1,0 +1,11 @@
+Cosmo_analysis_framework.cobaya_interfaces.CobayaCAMB_mnuExtrap:
+  stop_at_error: true
+  extra_args:
+    lmax: 4000
+    lens_margin: 1250
+    lens_potential_accuracy: 4
+    AccuracyBoost: 1
+    lSampleBoost: 1
+    lAccuracyBoost: 1
+    halofit_version: 'mead2016'
+    num_massive_neutrinos: 3
