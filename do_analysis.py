@@ -8,7 +8,9 @@ from getdist.mcsamples import loadMCSamples
 import getdist.plots as gdplt
 import yaml
 from yaml.loader import SafeLoader
-from scipy.stats import chi2, norm
+from scipy.stats import chi2
+from scipy.special import erf
+from scipy.optimize import fsolve
 # make plots pretty
 plt.rc('font',**{'size':'22','family':'serif','serif':['CMU serif']})
 plt.rc('mathtext', **{'fontset':'cm'})
@@ -63,10 +65,6 @@ def get_bestFit_values(fn):
     bf = np.loadtxt(fullfn)
     return dict(zip(header,bf))
 
-################################################
-####            Tension metrics              ###
-################################################
-
 def deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn):
     w0wa_info = yaml.load(open(f'chains/{w0wa_fn}.minimize.input.yaml'), Loader=SafeLoader)
     lcdm_info = yaml.load(open(f'chains/{lcdm_fn}.minimize.input.yaml'), Loader=SafeLoader)
@@ -78,27 +76,60 @@ def deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn):
 
 def deltaChi2_to_sigma(dchi2,dof=2):
     chi2cdf = chi2.cdf(dchi2, df=dof)
-    x = np.linspace(-1,4,50000)
-    normcdf = norm.cdf(x)
-    return x[np.argmin((chi2cdf-normcdf)**2)]
+    def dcdf(x): return erf(x/np.sqrt(2)) - chi2cdf
+    return fsolve(dcdf, 2)[0]
 
-def print_tension_metrics():
-    for dataset in ['cmb-p+cmb-l+bao']:
-        for tau in [0.06,0.09]: 
-            w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
-            lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
-            delt = deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
-            sig = deltaChi2_to_sigma(delt,dof=2)
-            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
-            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
-            print(s,flush=True)
+def lcdm_H0rd_OmM(fn):
+    bf_H0rd = get_bestFit_values(fn)['H0rd']
+    bf_OmM  = get_bestFit_values(fn)['OmegaM']
+    chain   = load_chains([fn],verbose=False)[0]
+    param_names_all = [p.name for p in chain.getParamNames().names]
+    selected_params = ['H0rd','OmegaM']
+    indices = [param_names_all.index(name) for name in selected_params]
+    return np.array([bf_H0rd,bf_OmM]),chain.cov()[np.ix_(indices, indices)]
+
+def lcdm_tension(fn1,fn2):
+    bf1,cov1 = lcdm_H0rd_OmM(fn1)
+    bf2,cov2 = lcdm_H0rd_OmM(fn2)
+    dchi2 = np.dot(bf1-bf2,np.dot(np.linalg.inv(cov1+cov2),bf1-bf2))
+    return dchi2,deltaChi2_to_sigma(dchi2,dof=2)
 
 ################################################
 ####               Figure 1                  ###
 ################################################
 
-def make_figure_1():
-    g = gdplt.get_single_plotter(width_inch=8, ratio=0.6)
+def make_figure_1a():
+    g = gdplt.get_single_plotter(width_inch=4, ratio=8*0.63/4)
+    g.settings.alpha_filled_add = 0.8
+    g.settings.axes_labelsize = 28 
+    g.settings.axes_fontsize = 20 
+    g.settings.axis_marker_color = 'k'
+    g.settings.axis_marker_lw = 1.2
+    FIG0_NAMES = [
+    'lcdm_mnu=0.06_tau=free_cmb-p',
+    'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l',
+    ]
+    chains = load_chains(FIG0_NAMES)
+    labels = [r'high-$\ell$ CMB',r'+ lensing']
+    colors = ['C4','lightgreen']
+    g.rectangle_plot(['tau'],['OmegaM'],plot_roots=[[chains]],
+                     filled=[True,False],colors=colors,ls=['-','-'],lws=[1,4])
+    for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
+    ax = g.subplots[0,0]
+    mu,std = 0.2967859144496603,0.00790605489981
+    ax.fill_between([0.0,0.9],[mu-2*std]*2,[mu+2*std]*2,color='C0',alpha=0.3,zorder=0)
+    ax.fill_between([0.0,0.9],[mu-std]*2,[mu+std]*2,color='C0',alpha=0.7,zorder=0)
+    plt.xlabel(r'$\tau$')
+    plt.ylabel(r'$\Omega_{\rm m}$')
+    legend = plt.legend(loc='lower left',frameon=True,fontsize=20,framealpha=0.6)
+    legend.get_frame().set_edgecolor('w')
+    plt.xlim(0.02,0.1)
+    plt.yticks([0.28,0.30,0.32,0.34])
+    plt.ylim(0.276,0.34)
+    plt.savefig('figures/tau_OmM_contours.pdf', dpi=100, bbox_inches='tight')
+
+def make_figure_1b():
+    g = gdplt.get_single_plotter(width_inch=7, ratio=0.75)
     g.settings.alpha_filled_add = 0.8
     g.settings.axes_labelsize = 28 
     g.settings.axes_fontsize = 20 
@@ -115,19 +146,32 @@ def make_figure_1():
     g.rectangle_plot(['H0rd'],['OmegaM'],plot_roots=[[chains]],
                      filled=[True,True,False],colors=colors,ls=['-','-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
+    ax = g.subplots[0,0]
     for i,chain in enumerate(chains):
         dist = chain.get1DDensity('H0rd'); I = np.where((dist.x>96.8)&(dist.x<103.5))
-        g.add_line(dist.x[I],0.34+dist.P[I]/110,color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
+        ax.plot(dist.x[I],0.34+dist.P[I]/110,color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
+        if i<2: ax.fill_between(dist.x[I],np.ones_like(dist.x[I])*0.34,0.34+dist.P[I]/110,
+                                color=colors[i],clip_on=False,alpha=0.4)
         dist = chain.get1DDensity('OmegaM'); I = np.where((dist.x>0.276)&(dist.x<0.34))
-        g.add_line(103.5+dist.P[I]/2,dist.x[I],color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
+        ax.plot(103.5+dist.P[I]/2,dist.x[I],color=colors[i],ls=['-','-','--'][i],lw=3,clip_on=False)
+        if i<2: ax.fill_betweenx(dist.x[I],np.ones_like(dist.x[I])*103.5,103.5+dist.P[I]/2,
+                                color=colors[i],clip_on=False,alpha=0.4)
     plt.xlabel(r'$H_0\,r_{\rm d}$ [100 km s$^{-1}$]')
-    plt.ylabel(r'$\Omega_{\rm m}$')
-    plt.legend(loc='lower left',frameon=False,fontsize=20)
+    plt.ylabel('')
+    plt.legend(loc='lower left',frameon=False,fontsize=22)
     plt.xticks([98,100,102])
-    plt.yticks([0.28,0.30,0.32,0.34])
+    plt.yticks([0.28,0.30,0.32,0.34],labels=[])
     plt.xlim(96.8,103.5)
     plt.ylim(0.276,0.34)
     plt.savefig('figures/H0rd_OmM_contours.pdf', dpi=100, bbox_inches='tight')
+    dchi2,nsig = lcdm_tension(FIG1_NAMES[0],FIG1_NAMES[1])
+    print(f"DESI vs CMB (tau=0.06): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.01f}sigma")
+    dchi2,nsig = lcdm_tension(FIG1_NAMES[0],FIG1_NAMES[2])
+    print(f"DESI vs CMB (tau=0.09): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.01f}sigma")
+
+def make_figure_1():
+    make_figure_1a()
+    make_figure_1b()
 
 ################################################
 ####               Figure 3                  ###
@@ -151,7 +195,6 @@ def make_figure_3():
     g.rectangle_plot(['w'],['wa'],plot_roots=[[chains]],
                      filled=[True,False],colors=colors,ls=['-','--'])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
-    #plt.text(-0.5,0.2,r'DESI+CMB',fontsize=30)
     plt.axhline(y=0,c=lcdm_color,lw=1)
     plt.axvline(x=-1,c=lcdm_color,lw=1)
     plt.axhline(y=0,c='k',lw=2,ls='dotted')
@@ -175,13 +218,20 @@ def make_figure_3():
     text=plt.text(-0.98,0.2,r'$\boldsymbol{\Lambda}$\textbf{CDM}',ha='left', va='bottom',fontsize=20,color=lcdm_color)
     text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
+    for dataset in ['cmb-p+cmb-l+bao']:
+        for tau in [0.06,0.09]: 
+            w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
+            lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
+            delt = deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
+            sig = deltaChi2_to_sigma(delt,dof=2)
+            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
+            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
+            print(s,flush=True)
 
 ################################################
 ####          Make the figures               ###
-####        Print tension metrics            ###
 ################################################
 
 if __name__ == "__main__":
     make_figure_1()
     make_figure_3()
-    print_tension_metrics()
