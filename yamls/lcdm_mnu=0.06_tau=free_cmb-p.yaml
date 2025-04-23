@@ -6,11 +6,6 @@ params: !defaults [../defaults/lcdm,../defaults/mnu=0.06,../defaults/tau=free]
 
 minimizer: !defaults [../defaults/minimizer_precision]
 
-sampler:
-  mcmc:
-    Rminus1_stop: 0.01
-    Rminus1_cl_stop: 0.05
-    learn_proposal_Rminus1_max_early: 30.0
-    learn_proposal_Rminus1_max: 10.0
+sampler: !defaults [../defaults/mcmc_sampler]
     
 output: ../chains/lcdm_mnu=0.06_tau=free_cmb-p
