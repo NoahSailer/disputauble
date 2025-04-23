@@ -12,6 +12,6 @@ sampler:
     Rminus1_cl_stop: 0.05
     learn_proposal_Rminus1_max_early: 30.0
     learn_proposal_Rminus1_max: 10.0
-    covmat: ../chains/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao.covmat
+    covmat: ../chains/lcdm_mnu=free_tau=0.06_cmb-p+cmb-l+bao/lcdm_mnu=free_tau=0.06_cmb-p+cmb-l+bao.covmat
     measure_speeds: true
 output: ../chains/lcdm_mnu=free_tau=free_cmb-p+cmb-l+bao/lcdm_mnu=free_tau=free_cmb-p+cmb-l+bao
