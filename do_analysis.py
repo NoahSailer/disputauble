@@ -221,7 +221,7 @@ def make_figure_3():
     text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
     for dataset in ['cmb-p+cmb-l+bao']:
-        for tau in [0.06,0.075,0.08,0.09]: 
+        for tau in [0.06,0.09]: 
             w0wa_fn = f'w0wa_mnu=0.06_tau={tau}_{dataset}'
             lcdm_fn = f'lcdm_mnu=0.06_tau={tau}_{dataset}'
             delt = deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)

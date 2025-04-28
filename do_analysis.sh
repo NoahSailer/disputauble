@@ -1,8 +1,13 @@
 #!/bin/bash
 submit=true
-njobs=3       
-while [[ "$#" -gt 0 ]]; do
-  [[ "$1" == "--submit" ]] && submit="${2,,}" && shift
+njobs=3
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --submit=*) submit="${1#*=}" ;;
+    --njobs=*)  njobs="${1#*=}" ;;
+    --submit)   submit="${2,,}"; shift ;;
+    --njobs)    njobs="$2"; shift ;;
+  esac
   shift
 done
 # create directories for running chains and making figures
