@@ -1,4 +1,4 @@
-theory: !defaults [../defaults/camb,../defaults/lensing_lklh_corrections]
+theory: !defaults [../defaults/camb]
 
 likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l]
 
@@ -6,11 +6,15 @@ params: !defaults [../defaults/lcdm,../defaults/mnu=0.06,../defaults/tau=free]
 
 minimizer: !defaults [../defaults/minimizer_precision]
 
+<<<<<<< HEAD
 sampler:
   mcmc:
     Rminus1_stop: 0.01
     Rminus1_cl_stop: 0.01
     learn_proposal_Rminus1_max_early: 30.0
     learn_proposal_Rminus1_max: 10.0
+=======
+sampler: !defaults [../defaults/mcmc_sample]
+>>>>>>> 02f7d9e8f75944ce8cb5d718da41de49029531ce
     
 output: ../chains/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l
