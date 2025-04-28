@@ -1,0 +1,19 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "disputauble"
+authors = [{name = "Gerrit S. Farren", email = "gfarren@lbl.gov"}, {name = "Noah Sailer", email = "nsailer@berkeley.edu"}]
+readme = "README.md"
+classifiers = [
+	"License :: OSI Approved :: BSD License",
+]
+dynamic = ["version", "description"]
+dependencies = [
+	"numpy >=1.24.3",
+	"cobaya >=3.5.6",
+	"camb >=1.5.9"]
+
+[project.urls]
+Source = "https://github.com/NoahSailer/disputauble"

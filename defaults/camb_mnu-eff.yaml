@@ -1,4 +1,4 @@
-Cosmo_analysis_framework.cobaya_interfaces.CobayaCAMB_mnuExtrap:
+disputauble.CobayaCAMB_mnuEff:
   stop_at_error: true
   extra_args:
     lmax: 4000
