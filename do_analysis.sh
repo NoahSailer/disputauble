@@ -7,7 +7,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 # create directories for running chains and making figures
 mkdir chains log figures
-# create an up to date conda enviornment for cobaya if one doesn't exist
+# create an up-to-date conda enviornment for cobaya if one doesn't exist
 if conda info --envs | awk '{print $1}' | grep -q '^cobaya_up2d8$'; then
   echo "Skipping create_cobaya_env.sh. Found existing env: cobaya_up2d8"
 else
@@ -25,6 +25,8 @@ sample_and_minimize=(
 'w0wa_mnu=0.06_tau=0.09_cmb-p+cmb-l+bao'
 )
 sample=(
+'lcdm_mnu=0.06_tau=free_cmb-p'
+'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l'
 'lcdm-lite_mnu=0.06_tau=0.06_bao'
 "${sample_and_minimize[@]}"
 )

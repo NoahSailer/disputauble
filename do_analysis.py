@@ -106,26 +106,28 @@ def make_figure_1a():
     g.settings.axis_marker_color = 'k'
     g.settings.axis_marker_lw = 1.2
     FIG0_NAMES = [
-    'lcdm_mnu=0.06_tau=free_cmb-p',
     'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l',
     ]
     chains = load_chains(FIG0_NAMES)
-    labels = [r'high-$\ell$ CMB',r'+ lensing']
-    colors = ['C4','lightgreen']
+    labels = [r'CMB']
+    colors = ['green']
     g.rectangle_plot(['tau'],['OmegaM'],plot_roots=[[chains]],
-                     filled=[True,False],colors=colors,ls=['-','-'],lws=[1,4])
+                     filled=[True],colors=colors,ls=['-'],lws=[1])
     for label,c in zip(labels,colors): plt.hist([],color=c,label=label)
     ax = g.subplots[0,0]
     mu,std = 0.2967859144496603,0.00790605489981
     ax.fill_between([0.0,0.9],[mu-2*std]*2,[mu+2*std]*2,color='C0',alpha=0.3,zorder=0)
     ax.fill_between([0.0,0.9],[mu-std]*2,[mu+std]*2,color='C0',alpha=0.7,zorder=0)
+    tau = np.linspace(0.01,0.2,500)
+    ax.plot(tau,0.349-0.505*tau,c='yellow',ls='--',lw=4)
     plt.xlabel(r'$\tau$')
     plt.ylabel(r'$\Omega_{\rm m}$')
-    legend = plt.legend(loc='lower left',frameon=True,fontsize=20,framealpha=0.6)
+    legend = plt.legend(loc='upper right',frameon=False,fontsize=20)
     legend.get_frame().set_edgecolor('w')
-    plt.xlim(0.02,0.1)
+    plt.xlim(0.03,0.12)
     plt.yticks([0.28,0.30,0.32,0.34])
     plt.ylim(0.276,0.34)
+    plt.xticks([0.03,0.06,0.09,0.12])
     plt.savefig('figures/tau_OmM_contours.pdf', dpi=100, bbox_inches='tight')
 
 def make_figure_1b():
@@ -165,9 +167,9 @@ def make_figure_1b():
     plt.ylim(0.276,0.34)
     plt.savefig('figures/H0rd_OmM_contours.pdf', dpi=100, bbox_inches='tight')
     dchi2,nsig = lcdm_tension(FIG1_NAMES[0],FIG1_NAMES[1])
-    print(f"DESI vs CMB (tau=0.06): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.01f}sigma")
+    print(f"DESI vs CMB (tau=0.06): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.03f}sigma")
     dchi2,nsig = lcdm_tension(FIG1_NAMES[0],FIG1_NAMES[2])
-    print(f"DESI vs CMB (tau=0.09): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.01f}sigma")
+    print(f"DESI vs CMB (tau=0.09): Delta chi^2 = {dchi2:0.02f}, or {nsig:0.03f}sigma")
 
 def make_figure_1():
     make_figure_1a()
@@ -219,13 +221,13 @@ def make_figure_3():
     text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),path_effects.Normal()])
     plt.savefig('figures/w0_wa_contours.pdf', dpi=100, bbox_inches='tight')
     for dataset in ['cmb-p+cmb-l+bao']:
-        for tau in [0.06,0.09]: 
-            w0wa_fn = f'w0wa_mnu=0.06_tau={tau:0.02f}_{dataset}'
-            lcdm_fn = f'lcdm_mnu=0.06_tau={tau:0.02f}_{dataset}'
+        for tau in [0.06,0.075,0.08,0.09]: 
+            w0wa_fn = f'w0wa_mnu=0.06_tau={tau}_{dataset}'
+            lcdm_fn = f'lcdm_mnu=0.06_tau={tau}_{dataset}'
             delt = deltaChi2_w0wa_vs_lcdm(w0wa_fn,lcdm_fn)
             sig = deltaChi2_to_sigma(delt,dof=2)
-            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.02f}"
-            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.01f}sigma"
+            s = f"w0wa preference over lcdm -- {dataset}, tau={tau:0.03f}"
+            s=s+f" -- Delta chi^2 = {delt:0.02f}, or {sig:0.03f}sigma"
             print(s,flush=True)
 
 ################################################
