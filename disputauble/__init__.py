@@ -3,4 +3,4 @@
 __version__ = "1.0"
 __author__ = "Gerrit S. Farren"
 
-from cobaya_CAMB_mnuEff import CobayaCAMB_mnuEff
+from .cobaya_CAMB_mnuEff import CobayaCAMB_mnuEff
