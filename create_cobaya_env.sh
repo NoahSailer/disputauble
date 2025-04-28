@@ -16,7 +16,10 @@ else
 fi
 cobaya-install cosmo -p $SCRATCH/Cobaya/Packages
 cobaya-install cosmo --upgrade -p $SCRATCH/Cobaya/Packages
-python3 -m pip install act_dr6_lenslike  --user
+python3 -m pip install act_dr6_lenslike --user
 cobaya-install act_dr6_lenslike.ACTDR6LensLike -p $SCRATCH/Cobaya/Packages
-python3 -m pip install -v git+https://github.com/gerrfarr/CMBLensLklh --user
-cobaya-install CMBLensLklh.CMBLensLklh -p $SCRATCH/Cobaya/Packages
+python3 -m pip install -v git+https://github.com/NoahSailer/disputauble --user
+#
+# Faster Planck PR4 + ACT DR6 likelihood, will be made public soon
+#python3 -m pip install -v git+https://github.com/gerrfarr/CMBLensLklh --user
+#cobaya-install CMBLensLklh.CMBLensLklh -p $SCRATCH/Cobaya/Packages
