@@ -176,6 +176,45 @@ def make_figure_1():
     make_figure_1b()
 
 ################################################
+####               Figure 2                  ###
+################################################
+
+def make_figure_2():
+    g = gdplt.get_single_plotter(width_inch=7, ratio=0.75)
+    g.settings.alpha_filled_add = 0.4
+    g.settings.axes_labelsize = 28 
+    g.settings.axes_fontsize = 20 
+    g.settings.axis_marker_color = 'k'
+    g.settings.axis_marker_lw = 1.2
+    FIG2_NAMES = [
+    'lcdm_mnu=free_tau=0.06_cmb-p+cmb-l+bao', 
+    'lcdm_mnu=free_tau=0.09_cmb-p+cmb-l+bao', 
+    'lcdm_mnu=free_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+    ]
+    chains = load_chains(FIG2_NAMES)
+    for c in chains:
+        for x in c.getParamNames().names:
+            if x.name == 'mnu_eff':
+                x.label = r"M_{\nu,\mathrm{eff}}" 
+    
+    labels = [r'$\tau=0.06$', 
+              r'$\tau=0.09$', 
+              r'w/ low-$\ell$ CMB']
+    colors = ['C6','k','tab:orange']
+    linestyles = ['solid', 'solid', 'dashed']
+    g.plot_1d(chains, 'mnu_eff', filled=True, colors=colors, ls=linestyles)
+    for label,c,ls in zip(labels,colors,linestyles): plt.plot([],color=c,label=label,linestyle=ls)
+    plt.legend(loc='upper left', ncol=3, fontsize=15, frameon=True, title=r'$\Lambda$CDM$ + M_{\nu,\mathrm{eff}}$', title_fontsize=20)
+    plt.axvspan(-0.5, 0.0, color='grey', fill=True, alpha=0.2)
+    
+    plt.axvline(0.059, color='k', linestyle='dotted')
+    plt.text(0.064, 0.8, "normal hierarchy\n minimum mass", fontsize=15)
+    
+    plt.ylim(0, 1.32)
+    plt.xlim(-0.28, 0.18)
+    plt.savefig("figures/mnu_eff.pdf", dpi=100, bbox_inches='tight')
+
+################################################
 ####               Figure 3                  ###
 ################################################
 
@@ -231,9 +270,46 @@ def make_figure_3():
             print(s,flush=True)
 
 ################################################
+####               Figure 4                  ###
+################################################
+
+def make_figure_4():
+    g = gdplt.get_single_plotter(width_inch=7, ratio=0.75)
+    g.settings.alpha_filled_add = 0.4
+    g.settings.axes_labelsize = 28 
+    g.settings.axes_fontsize = 20 
+    g.settings.axis_marker_color = 'k'
+    g.settings.axis_marker_lw = 1.2
+    FIG4_NAMES = ['lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao',
+                  'lcdm_mnu>0.06_tau=free_cmb-p+cmb-l+bao',
+                  'lcdm_mnu=0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao', 
+                  'lcdm_mnu>0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+    ]
+    chains = load_chains(FIG4_NAMES)
+    labels = [r"high-$\ell$ CMB + CMB lensing + BAO",
+              None,
+              r"+ low-$\ell$ CMB",
+              None]
+    colors = ['tab:purple','tab:purple', 'tab:orange', 'tab:orange']
+    linestyles = ['solid', 'dashed', 'solid', 'dashed']
+    g.plot_1d(chains, 'tau', colors=colors, ls=linestyles)
+
+    for label,c,ls in zip(labels[::2],colors[::2],linestyles[::2]): plt.plot([],color=c,label=label,linestyle=ls)
+    plt.plot([], color='grey', linestyle='solid', label=r"w/ $\sum m_\nu = 0.06$")
+    plt.plot([], color='grey', linestyle='dashed', label=r"w/ $\sum m_\nu \geq 0.06$")
+    
+    plt.legend(loc='upper left', ncol=2, fontsize=14, frameon=True)
+    
+    plt.ylim(0, 1.27)
+    plt.xlim(0.04, 0.14)
+    plt.savefig("figures/tau_infer.pdf", dpi=100, bbox_inches='tight')
+
+################################################
 ####          Make the figures               ###
 ################################################
 
 if __name__ == "__main__":
     make_figure_1()
+    make_figure_2()
     make_figure_3()
+    make_figure_4()
