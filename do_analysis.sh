@@ -19,20 +19,25 @@ else
   echo "Creating conda env: cobaya_up2d8"
   bash create_cobaya_env.sh
 fi
-# submits jobs to the queue if not already submitted.
-# !!CURRENTLY RESTRICTED TO FIGS 1 AND 3!!
-# modify the sample and minimize lists below 
+# submits jobs to the queue (if not already submitted)
 cd yamls
 sample_and_minimize=(
 'lcdm_mnu=0.06_tau=0.06_cmb-p+cmb-l'
 'lcdm_mnu=0.06_tau=0.09_cmb-p+cmb-l'
 'w0wa_mnu=0.06_tau=0.06_cmb-p+cmb-l+bao'
 'w0wa_mnu=0.06_tau=0.09_cmb-p+cmb-l+bao'
+'lcdm_mnu=free_tau=0.06_cmb-p+cmb-l+bao'
+'lcdm_mnu=free_tau=0.09_cmb-p+cmb-l+bao'
+'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao'
 )
 sample=(
 'lcdm_mnu=0.06_tau=free_cmb-p'
 'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l'
 'lcdm-lite_mnu=0.06_tau=0.06_bao'
+'lcdm_mnu=free_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+'lcdm_mnu>0.06_tau=free_cmb-p+cmb-l+bao'
+'lcdm_mnu=0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+'lcdm_mnu>0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
 "${sample_and_minimize[@]}"
 )
 minimize=(

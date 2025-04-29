@@ -16,13 +16,13 @@ To use it in `Cobaya` include `disputauble.CobayaCAMB_mnuEff` in your `theory` b
 
 ## Public chains and scripts
 
-Chains are publicly available on [zenodo](https://www.zenodo.org). Download the chains and remake the figures (currently limited to figures 1 and 3) with:
+Chains are publicly available on [zenodo](https://zenodo.org/records/15298950). Download the chains and reproduce the figures with:
 
 ```
-mkdir figures
-wget ... (will upload chains to zenodo shortly)
-unzip chains.zip
 wget https://raw.github.com/NoahSailer/disputauble/main/do_analysis.py
+wget https://zenodo.org/records/15298950/files/chains.zip
+mkdir figures
+unzip chains.zip
 python do_analysis.py
 ```
 
