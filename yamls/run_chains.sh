@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH -J run_chains
-#SBATCH -t 2:00:00
+#SBATCH -t 4:00:00
 #SBATCH -N 1
 #SBATCH -o ../log/run_chains.out
 #SBATCH -e ../log/run_chains.err

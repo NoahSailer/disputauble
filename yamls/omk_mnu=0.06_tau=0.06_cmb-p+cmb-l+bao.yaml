@@ -1,0 +1,11 @@
+theory: !defaults [../defaults/camb,../defaults/lensing_lklh_corrections]
+
+likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l,../defaults/bao]
+
+params: !defaults [../defaults/omk,../defaults/mnu=0.06,../defaults/tau=0.06]
+
+minimizer: !defaults [../defaults/minimizer_precision]
+
+sampler: !defaults [../defaults/mcmc_sampler]
+
+output: ../chains/omk_mnu=0.06_tau=0.06_cmb-p+cmb-l+bao

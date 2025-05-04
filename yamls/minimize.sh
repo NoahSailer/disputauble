@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH -J minimize
-#SBATCH -t 2:00:00
+#SBATCH -t 4:00:00
 #SBATCH -N 1
 #SBATCH -o ../log/minimize.out
 #SBATCH -e ../log/minimize.err

@@ -29,6 +29,9 @@ sample_and_minimize=(
 'lcdm_mnu=free_tau=0.06_cmb-p+cmb-l+bao'
 'lcdm_mnu=free_tau=0.09_cmb-p+cmb-l+bao'
 'lcdm_mnu=0.06_tau=free_cmb-p+cmb-l+bao'
+'omk_mnu=0.06_tau=0.06_cmb-p+cmb-l+bao.yaml'
+'omk_mnu=0.06_tau=0.09_cmb-p+cmb-l+bao.yaml'
+'omk+w0wa_mnu>0.06_tau=free_cmb-p+cmb-l+bao.yaml'
 )
 sample=(
 'lcdm_mnu=0.06_tau=free_cmb-p'
@@ -38,6 +41,7 @@ sample=(
 'lcdm_mnu>0.06_tau=free_cmb-p+cmb-l+bao'
 'lcdm_mnu=0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
 'lcdm_mnu>0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+
 "${sample_and_minimize[@]}"
 )
 minimize=(
