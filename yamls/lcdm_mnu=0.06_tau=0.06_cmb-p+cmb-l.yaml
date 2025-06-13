@@ -1,4 +1,4 @@
-theory: !defaults [../defaults/camb]
+theory: !defaults [../defaults/camb,../defaults/lensing_lklh_corrections]
 
 likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l]
 

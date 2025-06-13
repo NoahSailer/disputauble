@@ -4,7 +4,7 @@ likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l,../defaults/bao]
 
 params: !defaults [../defaults/omk,../defaults/mnu=0.06,../defaults/tau=0.06]
 
-minimizer: !defaults [../defaults/minimizer_precision]
+minimizer: !defaults [../defaults/minimizer_lowprecision]
 
 sampler: !defaults [../defaults/mcmc_sampler]
 

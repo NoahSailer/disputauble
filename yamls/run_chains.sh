@@ -13,7 +13,7 @@ conda activate cobaya_up2d8
 rm ../chains/*lock*
 export COBAYA_USE_FILE_LOCKING=false
 export OMP_NUM_THREADS=8
-if test -f "chains/${name}.1.txt"
+if test -f "../chains/${name}.1.txt"
 then
     echo "Resuming chains with name: ${name}"
     srun -N 1 -n 16 -c 8 cobaya-run ../chains/${name}  
