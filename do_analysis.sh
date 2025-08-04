@@ -41,6 +41,7 @@ sample=(
 'lcdm_mnu>0.06_tau=free_cmb-p+cmb-l+bao'
 'lcdm_mnu=0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
 'lcdm_mnu>0.06_tau=free_cmb-p+cmb-lowl+cmb-l+bao'
+'alens_mnu=0.06_tau=free_cmb-f'
 "${sample_and_minimize[@]}"
 )
 minimize=(

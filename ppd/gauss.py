@@ -35,7 +35,8 @@ class GaussLike():
       """
       
       self.dat        = dat
-      self.cinv       = np.linalg.inv(cov)
+      if cov.ndim == 1: self.cinv = np.diag(1.0 / cov)
+      else: self.cinv = np.linalg.inv(cov)
       self.tmp_priors = tmp_priors
       self.D          = len(dat)
       self.T          = 0

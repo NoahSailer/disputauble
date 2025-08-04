@@ -33,7 +33,7 @@ matplotlib.rcParams['ytick.minor.width'] = 1.5
 matplotlib.rcParams['axes.titlesize'] = 30
 matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath, amssymb}'
 
-RM1_CUT = 0.02
+RM1_CUT = 5000
 
 ################################################
 ####          Helper functions               ###

@@ -1,4 +1,4 @@
-theory: !defaults [../defaults/camb]
+theory: !defaults [../defaults/camb,../defaults/lensing_lklh_corrections]
 
 likelihood: !defaults [../defaults/cmb-p,../defaults/cmb-l]
 
@@ -6,6 +6,6 @@ params: !defaults [../defaults/lcdm,../defaults/mnu=0.06,../defaults/tau=free]
 
 minimizer: !defaults [../defaults/minimizer_precision]
 
-sampler: !defaults [../defaults/mcmc_sample]
+sampler: !defaults [../defaults/mcmc_sampler]
     
 output: ../chains/lcdm_mnu=0.06_tau=free_cmb-p+cmb-l
